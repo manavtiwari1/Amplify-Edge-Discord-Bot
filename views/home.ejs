@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/assets/dashboard.css" />
+  </head>
+  <body class="dashboard-shell">
+    <div class="page-glow page-glow-left"></div>
+    <div class="page-glow page-glow-right"></div>
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">A</span>
+        <span class="brand-copy">
+          <strong>Amplify Edge</strong>
+          <small>Discord Operations</small>
+        </span>
+      </a>
+      <nav class="topbar-actions">
+        <% if (currentUser) { %>
+          <a class="ghost-button" href="/dashboard">Dashboard</a>
+          <a class="ghost-button" href="/logout">Log Out</a>
+        <% } else { %>
+          <a class="ghost-button" href="#features">Features</a>
+          <% if (oauthReady) { %>
+            <a class="primary-button" href="/auth/login">Sign In With Discord</a>
+          <% } else { %>
+            <span class="status-pill status-pill-warn">Dashboard auth needs `DISCORD_CLIENT_SECRET`</span>
+          <% } %>
+        <% } %>
+      </nav>
+    </header>
+
+    <main class="landing">
+      <% if (flash) { %>
+        <div class="flash flash-<%= flash.type %>"><%= flash.text %></div>
+      <% } %>
+
+      <section class="hero-card">
+        <div class="hero-copy">
+          <span class="eyebrow"><%= hero.eyebrow %></span>
+          <h1><%= hero.title %></h1>
+          <p><%= hero.copy %></p>
+          <div class="cta-row">
+            <% if (currentUser) { %>
+              <a class="primary-button" href="/dashboard">Open Your Servers</a>
+            <% } else if (oauthReady) { %>
+              <a class="primary-button" href="/auth/login">Connect Discord</a>
+            <% } %>
+            <a class="ghost-button" href="#features">See What You Can Control</a>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="status-grid">
+            <article class="status-card">
+              <span>Bot Status</span>
+              <strong><%= botReady ? "Online" : "Starting" %></strong>
+            </article>
+            <article class="status-card">
+              <span>Servers</span>
+              <strong><%= stats.guildCount %></strong>
+            </article>
+            <article class="status-card">
+              <span>Total Members</span>
+              <strong><%= stats.memberCount %></strong>
+            </article>
+            <article class="status-card">
+              <span>YouTube Alerts</span>
+              <strong>Ready</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="feature-grid">
+        <article class="feature-card">
+          <span class="feature-kicker">Moderation</span>
+          <h2>Handle warnings, timeouts, kicks, bans, and role actions from the browser.</h2>
+        </article>
+        <article class="feature-card">
+          <span class="feature-kicker">Configuration</span>
+          <h2>Update welcome channels, automod thresholds, blocked words, and leveling settings.</h2>
+        </article>
+        <article class="feature-card">
+          <span class="feature-kicker">Announcements</span>
+          <h2>Attach YouTube live alerts to announcement channels with optional role pings.</h2>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

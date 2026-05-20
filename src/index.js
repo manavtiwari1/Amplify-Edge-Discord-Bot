@@ -17,6 +17,7 @@ const { awardMessageXp, getProgress } = require("./lib/leveling");
 const { buildLogEmbed, sendLog } = require("./lib/logging");
 const { formatWelcomeMessage, truncate } = require("./lib/utils");
 const { startYouTubeMonitor } = require("./lib/youtube");
+const { startDashboardServer } = require("./web/server");
 
 function validateEnvironment() {
   const missing = [];
@@ -63,6 +64,8 @@ async function main() {
       GatewayIntentBits.MessageContent,
     ],
   });
+
+  startDashboardServer(client);
 
   client.once(Events.ClientReady, async (readyClient) => {
     const scope = await registerSlashCommands();

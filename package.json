@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "check": "node --check src/index.js && node --check src/commands.js && node --check src/config.js && node --check src/lib/automod.js && node --check src/lib/database.js && node --check src/lib/leveling.js && node --check src/lib/logging.js && node --check src/lib/utils.js"
+    "check": "node --check src/index.js && node --check src/commands.js && node --check src/config.js && node --check src/lib/automod.js && node --check src/lib/database.js && node --check src/lib/leveling.js && node --check src/lib/logging.js && node --check src/lib/utils.js && node --check src/lib/youtube.js && node --check src/web/server.js"
   },
   "keywords": [
     "discord",
@@ -22,6 +22,9 @@
     "better-sqlite3": "^12.9.0",
     "discord.js": "^14.26.4",
     "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "nodemon": "^3.1.14"
   }
 }

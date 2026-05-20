@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/assets/dashboard.css" />
+  </head>
+  <body class="dashboard-shell">
+    <div class="page-glow page-glow-left"></div>
+    <div class="page-glow page-glow-right"></div>
+    <header class="topbar">
+      <a class="brand" href="/dashboard">
+        <span class="brand-mark">A</span>
+        <span class="brand-copy">
+          <strong>Amplify Edge</strong>
+          <small><%= guild.name %></small>
+        </span>
+      </a>
+      <nav class="topbar-actions">
+        <span class="profile-chip">
+          <img src="<%= currentUser.avatarUrl %>" alt="<%= currentUser.username %>" />
+          <strong><%= currentUser.username %></strong>
+        </span>
+        <a class="ghost-button" href="/dashboard">All Servers</a>
+        <a class="ghost-button" href="/logout">Log Out</a>
+      </nav>
+    </header>
+
+    <main class="dashboard-page">
+      <% if (flash) { %>
+        <div class="flash flash-<%= flash.type %>"><%= flash.text %></div>
+      <% } %>
+
+      <section class="guild-hero">
+        <div class="guild-hero-copy">
+          <span class="eyebrow">Server Dashboard</span>
+          <h1><%= guild.name %></h1>
+          <p>Moderation, growth, welcome flows, and live alerts in one place.</p>
+        </div>
+        <div class="summary-grid">
+          <article class="status-card">
+            <span>Members</span>
+            <strong><%= stats.members %></strong>
+          </article>
+          <article class="status-card">
+            <span>Channels</span>
+            <strong><%= stats.channels %></strong>
+          </article>
+          <article class="status-card">
+            <span>Roles</span>
+            <strong><%= stats.roles %></strong>
+          </article>
+          <article class="status-card">
+            <span>Level Profiles</span>
+            <strong><%= stats.levelingProfiles %></strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel-card panel-card-wide">
+          <div class="card-heading">
+            <div>
+              <span class="feature-kicker">Configuration</span>
+              <h2>Community settings</h2>
+            </div>
+          </div>
+          <form class="stack-form" action="/dashboard/<%= guild.id %>/settings" method="post">
+            <div class="field-grid">
+              <label>
+                <span>Prefix</span>
+                <input type="text" name="prefix" value="<%= settings.prefix %>" maxlength="5" />
+              </label>
+              <label>
+                <span>Log channel</span>
+                <select name="logChannelId">
+                  <option value="">None</option>
+                  <% textChannels.forEach((channel) => { %>
+                    <option value="<%= channel.id %>" <%= settings.logChannelId === channel.id ? "selected" : "" %>>
+                      #<%= channel.name %>
+                    </option>
+                  <% }) %>
+                </select>
+              </label>
+              <label>
+                <span>Welcome channel</span>
+                <select name="welcomeChannelId">
+                  <option value="">None</option>
+                  <% textChannels.forEach((channel) => { %>
+                    <option value="<%= channel.id %>" <%= settings.welcomeChannelId === channel.id ? "selected" : "" %>>
+                      #<%= channel.name %>
+                    </option>
+                  <% }) %>
+                </select>
+              </label>
+            </div>
+
+            <label>
+              <span>Welcome message</span>
+              <textarea name="welcomeMessage" rows="3"><%= settings.welcomeMessage %></textarea>
+            </label>
+
+            <div class="toggle-grid">
+              <label class="toggle-card">
+                <input type="checkbox" name="automodEnabled" <%= settings.automodEnabled ? "checked" : "" %> />
+                <span>Enable automod</span>
+              </label>
+              <label class="toggle-card">
+                <input type="checkbox" name="inviteFilter" <%= settings.inviteFilter ? "checked" : "" %> />
+                <span>Block invite links</span>
+              </label>
+              <label class="toggle-card">
+                <input type="checkbox" name="levelingEnabled" <%= settings.levelingEnabled ? "checked" : "" %> />
+                <span>Enable leveling</span>
+              </label>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                <span>Caps threshold</span>
+                <input type="number" name="capsThreshold" min="50" max="100" value="<%= settings.capsThreshold %>" />
+              </label>
+              <label>
+                <span>Spam window (seconds)</span>
+                <input type="number" name="spamWindowSeconds" min="3" max="30" value="<%= settings.spamWindowSeconds %>" />
+              </label>
+              <label>
+                <span>Spam limit</span>
+                <input type="number" name="spamMessageLimit" min="3" max="15" value="<%= settings.spamMessageLimit %>" />
+              </label>
+            </div>
+
+            <label>
+              <span>Blocked words</span>
+              <textarea name="badWords" rows="2"><%= settings.badWords.join(", ") %></textarea>
+            </label>
+
+            <button class="primary-button" type="submit">Save Server Settings</button>
+          </form>
+        </article>
+
+        <article class="panel-card">
+          <div class="card-heading">
+            <div>
+              <span class="feature-kicker">Moderation</span>
+              <h2>Member actions</h2>
+            </div>
+          </div>
+          <form class="stack-form" action="/dashboard/<%= guild.id %>/moderation" method="post">
+            <label>
+              <span>User ID</span>
+              <input type="text" name="userId" placeholder="Discord user ID" required />
+            </label>
+            <label>
+              <span>Action</span>
+              <select name="action">
+                <option value="warn">Warn</option>
+                <option value="timeout">Timeout</option>
+                <option value="untimeout">Remove timeout</option>
+                <option value="kick">Kick</option>
+                <option value="ban">Ban</option>
+              </select>
+            </label>
+            <label>
+              <span>Timeout minutes</span>
+              <input type="number" name="minutes" min="1" max="40320" value="10" />
+            </label>
+            <label>
+              <span>Reason</span>
+              <textarea name="reason" rows="3" placeholder="Why are you taking this action?"></textarea>
+            </label>
+            <button class="primary-button" type="submit">Run Moderation Action</button>
+          </form>
+        </article>
+
+        <article class="panel-card">
+          <div class="card-heading">
+            <div>
+              <span class="feature-kicker">Roles</span>
+              <h2>Assign or remove</h2>
+            </div>
+          </div>
+          <form class="stack-form" action="/dashboard/<%= guild.id %>/roles" method="post">
+            <label>
+              <span>User ID</span>
+              <input type="text" name="userId" placeholder="Discord user ID" required />
+            </label>
+            <label>
+              <span>Role</span>
+              <select name="roleId" required>
+                <% manageableRoles.forEach((role) => { %>
+                  <option value="<%= role.id %>"><%= role.name %></option>
+                <% }) %>
+              </select>
+            </label>
+            <label>
+              <span>Mode</span>
+              <select name="mode">
+                <option value="add">Add role</option>
+                <option value="remove">Remove role</option>
+              </select>
+            </label>
+            <button class="primary-button" type="submit">Apply Role Change</button>
+          </form>
+        </article>
+
+        <article class="panel-card panel-card-wide">
+          <div class="card-heading">
+            <div>
+              <span class="feature-kicker">YouTube</span>
+              <h2>Live stream alerts</h2>
+            </div>
+          </div>
+          <form class="stack-form" action="/dashboard/<%= guild.id %>/youtube/add" method="post">
+            <div class="field-grid">
+              <label>
+                <span>YouTube channel ID</span>
+                <input type="text" name="youtubeChannel" placeholder="UC..." required />
+              </label>
+              <label>
+                <span>Discord channel</span>
+                <select name="discordChannelId" required>
+                  <% textChannels.forEach((channel) => { %>
+                    <option value="<%= channel.id %>">#<%= channel.name %></option>
+                  <% }) %>
+                </select>
+              </label>
+              <label>
+                <span>Mention role</span>
+                <select name="mentionRoleId">
+                  <option value="">No mention</option>
+                  <% manageableRoles.forEach((role) => { %>
+                    <option value="<%= role.id %>"><%= role.name %></option>
+                  <% }) %>
+                </select>
+              </label>
+            </div>
+            <button class="primary-button" type="submit">Add YouTube Alert</button>
+          </form>
+
+          <div class="subscription-list">
+            <% if (!subscriptions.length) { %>
+              <p class="muted-copy">No YouTube subscriptions configured yet.</p>
+            <% } %>
+            <% subscriptions.forEach((subscription) => { %>
+              <form class="subscription-row" action="/dashboard/<%= guild.id %>/youtube/remove" method="post">
+                <div>
+                  <strong><%= subscription.youtube_channel_name || subscription.youtube_channel_id %></strong>
+                  <small>
+                    Alerts to <%= textChannels.find((channel) => channel.id === subscription.discord_channel_id)?.name || subscription.discord_channel_id %>
+                  </small>
+                </div>
+                <input type="hidden" name="youtubeChannelId" value="<%= subscription.youtube_channel_id %>" />
+                <input type="hidden" name="discordChannelId" value="<%= subscription.discord_channel_id %>" />
+                <button class="ghost-button" type="submit">Remove</button>
+              </form>
+            <% }) %>
+          </div>
+        </article>
+
+        <article class="panel-card panel-card-wide">
+          <div class="card-heading">
+            <div>
+              <span class="feature-kicker">Moderation History</span>
+              <h2>Recent warnings</h2>
+            </div>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>User ID</th>
+                  <th>Moderator ID</th>
+                  <th>Reason</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (!recentWarnings.length) { %>
+                  <tr>
+                    <td colspan="5" class="empty-cell">No warnings recorded yet.</td>
+                  </tr>
+                <% } %>
+                <% recentWarnings.forEach((warning) => { %>
+                  <tr>
+                    <td>#<%= warning.id %></td>
+                    <td><%= warning.user_id %></td>
+                    <td><%= warning.moderator_id %></td>
+                    <td><%= warning.reason %></td>
+                    <td><%= new Date(warning.created_at).toLocaleString() %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

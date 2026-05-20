@@ -206,6 +206,19 @@ function getWarnings(guildId, userId) {
     .all(guildId, userId);
 }
 
+function getRecentWarnings(guildId, limit = 20) {
+  initDatabase();
+  return db
+    .prepare(`
+      SELECT id, user_id, moderator_id, reason, created_at
+      FROM warnings
+      WHERE guild_id = ?
+      ORDER BY created_at DESC
+      LIMIT ?
+    `)
+    .all(guildId, limit);
+}
+
 function getRank(guildId, userId) {
   initDatabase();
   return (
@@ -255,6 +268,19 @@ function getLeaderboard(guildId, limit = 10) {
       LIMIT ?
     `)
     .all(guildId, limit);
+}
+
+function getGuildLevelMemberCount(guildId) {
+  initDatabase();
+  const row = db
+    .prepare(`
+      SELECT COUNT(*) AS count
+      FROM levels
+      WHERE guild_id = ?
+    `)
+    .get(guildId);
+
+  return row?.count || 0;
 }
 
 function listYouTubeSubscriptions(guildId) {
@@ -341,9 +367,11 @@ module.exports = {
   updateGuildSettings,
   addWarning,
   getWarnings,
+  getRecentWarnings,
   getRank,
   saveRank,
   getLeaderboard,
+  getGuildLevelMemberCount,
   listYouTubeSubscriptions,
   getAllYouTubeSubscriptions,
   addYouTubeSubscription,

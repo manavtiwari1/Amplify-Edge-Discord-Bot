@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/assets/dashboard.css" />
+  </head>
+  <body class="dashboard-shell">
+    <div class="page-glow page-glow-left"></div>
+    <div class="page-glow page-glow-right"></div>
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">A</span>
+        <span class="brand-copy">
+          <strong>Amplify Edge</strong>
+          <small>Discord Operations</small>
+        </span>
+      </a>
+      <nav class="topbar-actions">
+        <span class="profile-chip">
+          <img src="<%= currentUser.avatarUrl %>" alt="<%= currentUser.username %>" />
+          <strong><%= currentUser.username %></strong>
+        </span>
+        <a class="ghost-button" href="/logout">Log Out</a>
+      </nav>
+    </header>
+
+    <main class="dashboard-page">
+      <% if (flash) { %>
+        <div class="flash flash-<%= flash.type %>"><%= flash.text %></div>
+      <% } %>
+
+      <section class="section-heading">
+        <div>
+          <span class="eyebrow">Your Servers</span>
+          <h1>Pick a community to manage</h1>
+        </div>
+      </section>
+
+      <section class="guild-grid">
+        <% if (!guilds.length) { %>
+          <article class="panel-card empty-card">
+            <h2>No manageable servers found</h2>
+            <p>Make sure the bot is in the server and your Discord account has Manage Server permissions.</p>
+          </article>
+        <% } %>
+        <% guilds.forEach((guild) => { %>
+          <a class="guild-card" href="/dashboard/<%= guild.id %>">
+            <% if (guild.iconUrl) { %>
+              <img class="guild-icon" src="<%= guild.iconUrl %>" alt="<%= guild.name %>" />
+            <% } else { %>
+              <div class="guild-icon guild-icon-fallback"><%= guild.name.charAt(0) %></div>
+            <% } %>
+            <div>
+              <strong><%= guild.name %></strong>
+              <small>Open moderation and configuration</small>
+            </div>
+          </a>
+        <% }) %>
+      </section>
+    </main>
+  </body>
+</html>
