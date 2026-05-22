@@ -61,32 +61,57 @@
             <a class="ghost-button" href="#features">See What You Can Control</a>
           </div>
         </div>
-        <div class="hero-panel">
-          <div class="status-grid">
-            <article class="status-card">
-              <span>Bot Status</span>
+        <div class="hero-mockup-wrapper">
+          <div class="mockup-container">
+            <div class="mockup-header">
+              <div class="mockup-dot mockup-dot-red"></div>
+              <div class="mockup-dot mockup-dot-yellow"></div>
+              <div class="mockup-dot mockup-dot-green"></div>
+              <span style="font-size: 0.75rem; color: var(--muted); margin-left: auto;">amplify-edge.io/preview</span>
+            </div>
+            
+            <div class="mockup-row">
+              <div class="mockup-icon">🤖</div>
+              <div class="mockup-text">
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase;">Bot Status</div>
+                <div style="font-size: 1.05rem; font-weight: 700; margin-top: 2px;">
+                  <% if (botReady) { %>
+                    Online
+                  <% } else if (locals.botUnconfigured) { %>
+                    Unconfigured
+                  <% } else if (locals.botStartupError) { %>
+                    Offline (Error)
+                  <% } else { %>
+                    Starting
+                  <% } %>
+                </div>
+              </div>
               <% if (botReady) { %>
-                <strong style="color: #57f287;">Online</strong>
+                <span class="mockup-badge">ONLINE</span>
               <% } else if (locals.botUnconfigured) { %>
-                <strong style="color: #faa61a;">Unconfigured</strong>
-              <% } else if (locals.botStartupError) { %>
-                <strong style="color: #ed4245;">Offline (Error)</strong>
+                <span class="mockup-badge" style="background: rgba(245, 158, 11, 0.12); color: var(--orange);">WARNING</span>
               <% } else { %>
-                <strong>Starting</strong>
+                <span class="mockup-badge" style="background: rgba(239, 68, 68, 0.12); color: var(--red);">OFFLINE</span>
               <% } %>
-            </article>
-            <article class="status-card">
-              <span>Servers</span>
-              <strong><%= stats.guildCount %></strong>
-            </article>
-            <article class="status-card">
-              <span>Total Members</span>
-              <strong><%= stats.memberCount %></strong>
-            </article>
-            <article class="status-card">
-              <span>YouTube Alerts</span>
-              <strong>Ready</strong>
-            </article>
+            </div>
+
+            <div class="mockup-row">
+              <div class="mockup-icon mockup-icon-cyan">🌐</div>
+              <div class="mockup-text">
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase;">Active Servers</div>
+                <div style="font-size: 1.05rem; font-weight: 700; margin-top: 2px;"><%= stats.guildCount %> Guilds</div>
+              </div>
+              <span class="mockup-badge" style="background: rgba(6, 182, 212, 0.12); color: var(--cyan);">CONNECTED</span>
+            </div>
+
+            <div class="mockup-row">
+              <div class="mockup-icon mockup-icon-gold">👥</div>
+              <div class="mockup-text">
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase;">Total Users</div>
+                <div style="font-size: 1.05rem; font-weight: 700; margin-top: 2px;"><%= stats.memberCount %> Members</div>
+              </div>
+              <span class="mockup-badge" style="background: rgba(245, 158, 11, 0.12); color: var(--orange);">MONITORED</span>
+            </div>
           </div>
         </div>
       </section>
