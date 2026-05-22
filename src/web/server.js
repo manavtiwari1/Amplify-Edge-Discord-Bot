@@ -2,12 +2,14 @@ const crypto = require("node:crypto");
 const path = require("node:path");
 const express = require("express");
 const session = require("express-session");
+const SqliteStore = require("better-sqlite3-session-store")(session);
 const {
   ChannelType,
   PermissionFlagsBits,
 } = require("discord.js");
 const config = require("../config");
 const {
+  initDatabase,
   addWarning,
   getGuildLevelMemberCount,
   getGuildSettings,
@@ -301,8 +303,16 @@ function startDashboardServer(client) {
 
   app.use(express.urlencoded({ extended: true }));
   app.use("/assets", express.static(path.join(process.cwd(), "public")));
+  const dbInstance = initDatabase();
   app.use(
     session({
+      store: new SqliteStore({
+        client: dbInstance,
+        expired: {
+          clear: true,
+          intervalMs: 900000 // Clear expired sessions every 15 minutes
+        }
+      }),
       secret: config.sessionSecret,
       resave: false,
       saveUninitialized: false,
