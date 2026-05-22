@@ -188,7 +188,7 @@ async function resolveDashboardGuilds(req, client) {
 
   return guilds
     .filter((guild) => hasGuildAccess(guild.permissions, PermissionFlagsBits.ManageGuild))
-    .filter((guild) => client.guilds.cache.has(guild.id))
+    .filter((guild) => client.guilds?.cache?.has(guild.id))
     .map((guild) => ({
       id: guild.id,
       name: guild.name,
@@ -211,21 +211,15 @@ async function requireDashboardGuild(req, res, client) {
         title: "You do not have access to this server.",
         copy: "Make sure you manage the server in Discord and that the bot has already joined it.",
       },
-      currentUser: req.session.user || null,
       flash: res.locals.flash,
-      oauthReady: Boolean(config.clientSecret),
-      botReady: client.isReady(),
-      stats: {
-        guildCount: client.guilds.cache.size,
-        memberCount: client.guilds.cache.reduce((total, guild) => total + guild.memberCount, 0),
-      },
+      ...buildDashboardLocals(client, req.session.user || null),
     });
     return null;
   }
 
   const guild =
-    client.guilds.cache.get(guildId) ||
-    (await client.guilds.fetch(guildId).catch(() => null));
+    client.guilds?.cache?.get(guildId) ||
+    (client.guilds ? await client.guilds.fetch(guildId).catch(() => null) : null);
 
   if (!guild) {
     res.status(404).render("home", {
@@ -235,14 +229,8 @@ async function requireDashboardGuild(req, res, client) {
         title: "The bot is not in that server yet.",
         copy: "Invite the bot to the server first, then come back to the dashboard.",
       },
-      currentUser: req.session.user || null,
       flash: res.locals.flash,
-      oauthReady: Boolean(config.clientSecret),
-      botReady: client.isReady(),
-      stats: {
-        guildCount: client.guilds.cache.size,
-        memberCount: client.guilds.cache.reduce((total, currentGuild) => total + currentGuild.memberCount, 0),
-      },
+      ...buildDashboardLocals(client, req.session.user || null),
     });
     return null;
   }
@@ -296,9 +284,11 @@ function buildDashboardLocals(client, user = null) {
     oauthReady: Boolean(config.clientSecret),
     currentUser: user,
     botReady: client.isReady(),
+    botUnconfigured: Boolean(client.unconfigured),
+    botStartupError: client.startupError || null,
     stats: {
-      guildCount: client.guilds.cache.size,
-      memberCount: client.guilds.cache.reduce((total, guild) => total + guild.memberCount, 0),
+      guildCount: client.guilds?.cache?.size || 0,
+      memberCount: client.guilds?.cache?.reduce((total, guild) => total + guild.memberCount, 0) || 0,
     },
   };
 }
@@ -353,7 +343,7 @@ function startDashboardServer(client) {
       ok: true,
       dashboard: true,
       botReady: client.isReady(),
-      guildCount: client.guilds.cache.size,
+      guildCount: client.guilds?.cache?.size || 0,
     });
   });
 

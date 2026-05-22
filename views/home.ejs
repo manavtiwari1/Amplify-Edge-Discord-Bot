@@ -37,6 +37,16 @@
         <div class="flash flash-<%= flash.type %>"><%= flash.text %></div>
       <% } %>
 
+      <% if (locals.botUnconfigured) { %>
+        <div class="flash flash-error" style="border-left: 4px solid #faa61a;">
+          <strong>Configuration Warning:</strong> The bot is currently unconfigured because required environment variables are missing (e.g., <code>DISCORD_BOT_TOKEN</code> or <code>DISCORD_CLIENT_ID</code>). Please add these variables in your Render environment settings.
+        </div>
+      <% } else if (locals.botStartupError) { %>
+        <div class="flash flash-error" style="border-left: 4px solid #ed4245;">
+          <strong>Bot Connection Error:</strong> The Discord bot failed to log in. Error: <code><%= botStartupError %></code>. Please check your <code>DISCORD_BOT_TOKEN</code> in your environment variables.
+        </div>
+      <% } %>
+
       <section class="hero-card">
         <div class="hero-copy">
           <span class="eyebrow"><%= hero.eyebrow %></span>
@@ -55,7 +65,15 @@
           <div class="status-grid">
             <article class="status-card">
               <span>Bot Status</span>
-              <strong><%= botReady ? "Online" : "Starting" %></strong>
+              <% if (botReady) { %>
+                <strong style="color: #57f287;">Online</strong>
+              <% } else if (locals.botUnconfigured) { %>
+                <strong style="color: #faa61a;">Unconfigured</strong>
+              <% } else if (locals.botStartupError) { %>
+                <strong style="color: #ed4245;">Offline (Error)</strong>
+              <% } else { %>
+                <strong>Starting</strong>
+              <% } %>
             </article>
             <article class="status-card">
               <span>Servers</span>

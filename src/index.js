@@ -52,7 +52,6 @@ async function registerSlashCommands() {
 }
 
 async function main() {
-  validateEnvironment();
   initDatabase();
 
   const client = new Client({
@@ -66,6 +65,25 @@ async function main() {
   });
 
   startDashboardServer(client);
+
+  const missing = [];
+  if (!config.token) {
+    missing.push("DISCORD_BOT_TOKEN");
+  }
+  if (!config.clientId) {
+    missing.push("DISCORD_CLIENT_ID");
+  }
+
+  if (missing.length) {
+    client.unconfigured = true;
+    client.startupError = `Missing environment variables: ${missing.join(", ")}`;
+    console.warn("==================================================");
+    console.warn(`WARNING: Missing environment variables: ${missing.join(", ")}`);
+    console.warn("The web dashboard is running, but the Discord bot cannot start.");
+    console.warn("Please set these environment variables in your hosting provider's dashboard.");
+    console.warn("==================================================");
+    return;
+  }
 
   client.once(Events.ClientReady, async (readyClient) => {
     const scope = await registerSlashCommands();
@@ -247,7 +265,16 @@ async function main() {
     });
   });
 
-  await client.login(config.token);
+  try {
+    await client.login(config.token);
+  } catch (error) {
+    client.startupError = error.message;
+    console.error("==================================================");
+    console.error("FAILED TO LOGIN TO DISCORD:", error.message);
+    console.error("The web dashboard is still running, but the Discord bot is offline.");
+    console.error("Please verify that your DISCORD_BOT_TOKEN is correct.");
+    console.error("==================================================");
+  }
 }
 
 main().catch((error) => {

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A Discord community bot starter inspired by Mee6 and Dyno.",
   "main": "src/index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
