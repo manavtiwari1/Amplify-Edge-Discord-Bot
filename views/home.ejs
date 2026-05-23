@@ -9,24 +9,31 @@
   <body class="dashboard-shell">
     <div class="page-glow page-glow-left"></div>
     <div class="page-glow page-glow-right"></div>
+    
     <header class="topbar">
       <a class="brand" href="/">
         <span class="brand-mark">A</span>
         <span class="brand-copy">
-          <strong>Amplify Edge</strong>
+          <strong>Amplify Bot</strong>
           <small>Discord Operations</small>
         </span>
       </a>
+      <nav class="topbar-actions" style="margin-left: auto; display: flex; gap: 24px; font-weight: 600;">
+        <a href="/" style="color: var(--ink);">Home</a>
+        <a href="/about" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">About</a>
+        <a href="/plugins" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Plugins</a>
+        <a href="/status" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Status</a>
+        <a href="/contact" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Contact</a>
+      </nav>
       <nav class="topbar-actions">
         <% if (currentUser) { %>
           <a class="ghost-button" href="/dashboard">Dashboard</a>
           <a class="ghost-button" href="/logout">Log Out</a>
         <% } else { %>
-          <a class="ghost-button" href="#features">Features</a>
           <% if (oauthReady) { %>
-            <a class="primary-button" href="/auth/login">Sign In With Discord</a>
+            <a class="primary-button" href="/auth/login">Add to Discord</a>
           <% } else { %>
-            <span class="status-pill status-pill-warn">Dashboard auth needs `DISCORD_CLIENT_SECRET`</span>
+            <span class="status-pill status-pill-warn">Auth Offline</span>
           <% } %>
         <% } %>
       </nav>
@@ -39,11 +46,11 @@
 
       <% if (locals.botUnconfigured) { %>
         <div class="flash flash-error" style="border-left: 4px solid #faa61a;">
-          <strong>Configuration Warning:</strong> The bot is currently unconfigured because required environment variables are missing (e.g., <code>DISCORD_BOT_TOKEN</code> or <code>DISCORD_CLIENT_ID</code>). Please add these variables in your Render environment settings.
+          <strong>Configuration Warning:</strong> The bot is currently unconfigured because required environment variables are missing. Please add these variables in your environment.
         </div>
       <% } else if (locals.botStartupError) { %>
         <div class="flash flash-error" style="border-left: 4px solid #ed4245;">
-          <strong>Bot Connection Error:</strong> The Discord bot failed to log in. Error: <code><%= botStartupError %></code>. Please check your <code>DISCORD_BOT_TOKEN</code> in your environment variables.
+          <strong>Bot Connection Error:</strong> The Discord bot failed to log in. Error: <code><%= botStartupError %></code>.
         </div>
       <% } %>
 
@@ -116,20 +123,240 @@
         </div>
       </section>
 
+      <!-- Features Preview Section -->
+      <section style="text-align: center; margin-top: 80px; margin-bottom: 20px;">
+        <span class="eyebrow">Explore Plugins</span>
+        <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: var(--ink); margin: 0 0 10px;">Endless Customization at Your Fingertips</h2>
+        <p style="color: var(--muted); max-width: 600px; margin: 0 auto 30px; font-size: 1.05rem; line-height: 1.6;">Amplify Bot handles everything from basic commands to complex AI assistants. Turn modules on or off instantly.</p>
+      </section>
+
       <section id="features" class="feature-grid">
         <article class="feature-card">
-          <span class="feature-kicker">Moderation</span>
-          <h2>Handle warnings, timeouts, kicks, bans, and role actions from the browser.</h2>
+          <div class="plugin-icon-box">🛡️</div>
+          <span class="feature-kicker">Security</span>
+          <h2>Moderation</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Keep your server clean with automatic invite filtering, caps limits, spam control, and word block lists.</p>
         </article>
+        
         <article class="feature-card">
-          <span class="feature-kicker">Configuration</span>
-          <h2>Update welcome channels, automod thresholds, blocked words, and leveling settings.</h2>
+          <div class="plugin-icon-box plugin-icon-cyan">🎵</div>
+          <span class="feature-kicker">Entertainment</span>
+          <h2>Music</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Stream high-definition voice audio with full queue control, search triggers, and volume levels.</p>
         </article>
+
         <article class="feature-card">
-          <span class="feature-kicker">Announcements</span>
-          <h2>Attach YouTube live alerts to announcement channels with optional role pings.</h2>
+          <div class="plugin-icon-box plugin-icon-gold">🧠</div>
+          <span class="feature-kicker">Advanced AI</span>
+          <h2>AI Chat</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Engage members in automated discussions using state-of-the-art conversational AI models.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="plugin-icon-box plugin-icon-red">🎟️</div>
+          <span class="feature-kicker">Support</span>
+          <h2>Tickets</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Resolve user requests inside private threads with full logging transcripts and panel actions.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="plugin-icon-box plugin-icon-green">📝</div>
+          <span class="feature-kicker">Tracking</span>
+          <h2>Logging</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Record member joins, message updates, profile changes, and admin moderations instantly.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="plugin-icon-box">🏷️</div>
+          <span class="feature-kicker">Management</span>
+          <h2>Auto Roles</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Assign customizable welcome roles to your community members automatically upon arrival.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="plugin-icon-box plugin-icon-cyan">👋</div>
+          <span class="feature-kicker">Retention</span>
+          <h2>Welcome Messages</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Send beautiful cards or customized greetings to introduce new arrivals to channels.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="plugin-icon-box plugin-icon-gold">🪙</div>
+          <span class="feature-kicker">Gamification</span>
+          <h2>Economy</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Give chatters custom currencies to buy shop items, unlock custom roles, or trade items.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="plugin-icon-box plugin-icon-red">📈</div>
+          <span class="feature-kicker">Gamification</span>
+          <h2>Leveling</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Reward active chatters with leveling XP milestones, customizable ranking cards, and scoreboards.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="plugin-icon-box plugin-icon-green">🎁</div>
+          <span class="feature-kicker">Engagement</span>
+          <h2>Giveaways</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Host giveaway raffles with role requirements, level thresholds, and automatic draw selectors.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="plugin-icon-box">🛡️</div>
+          <span class="feature-kicker">Security</span>
+          <h2>Anti-Raid Shield</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Block bot accounts, automatically throttle rapid join intervals, and block spam campaigns.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="plugin-icon-box plugin-icon-cyan">🎮</div>
+          <span class="feature-kicker">Utilities</span>
+          <h2>Fun Commands</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Play trivia, trigger custom emojis, display search gifs, and prompt memes on-demand.</p>
         </article>
       </section>
+
+      <!-- Stats Section -->
+      <section class="panel-card panel-card-wide" style="margin-top: 60px; text-align: center; padding: 48px; background: linear-gradient(135deg, rgba(16, 20, 36, 0.9), rgba(26, 30, 52, 0.75));">
+        <span class="eyebrow">Realtime Metrics</span>
+        <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: var(--ink); margin: 0 0 40px;">Amplify Bot by the Numbers</h2>
+        <div class="field-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; color: var(--accent); text-shadow: 0 0 15px var(--accent-glow);" id="servers-counter"><%= stats.guildCount %></div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Servers Active</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; color: var(--cyan); text-shadow: 0 0 15px rgba(6, 182, 212, 0.3);" id="users-counter"><%= stats.memberCount %></div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Users Served</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; color: var(--green); text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);" id="cmds-counter">2.4M+</div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Commands Run</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; color: var(--orange); text-shadow: 0 0 15px rgba(245, 158, 11, 0.3);" id="uptime-counter">99.9%</div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Uptime SLA</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials Section -->
+      <section style="margin-top: 60px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <span class="eyebrow">Reviews</span>
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: var(--ink); margin: 0;">What Server Owners are Saying</h2>
+        </div>
+        <div class="field-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="panel-card" style="padding: 28px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <div style="width: 40px; height: 40px; border-radius: 50%; background: #5865f2; display: grid; place-items: center; font-weight: 800; color: white;">M</div>
+              <div>
+                <div style="font-weight: 700; color: var(--ink);">Marcus.dev</div>
+                <div style="font-size: 0.8rem; color: var(--muted);">Owner, CodeCraft Guild</div>
+              </div>
+            </div>
+            <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">"Amplify has completely replaced three other bots in our community. The automod settings are extremely fine-grained, and welcoming works perfectly!"</p>
+          </div>
+          
+          <div class="panel-card" style="padding: 28px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <div style="width: 40px; height: 40px; border-radius: 50%; background: #e91e63; display: grid; place-items: center; font-weight: 800; color: white;">S</div>
+              <div>
+                <div style="font-weight: 700; color: var(--ink);">Sarah_X</div>
+                <div style="font-size: 0.8rem; color: var(--muted);">Admin, Chill Lounge</div>
+              </div>
+            </div>
+            <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">"The YouTube livestream alerts are instantaneous! The custom role management also saves us hours of setup every week. Highly recommended bot."</p>
+          </div>
+
+          <div class="panel-card" style="padding: 28px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <div style="width: 40px; height: 40px; border-radius: 50%; background: #4caf50; display: grid; place-items: center; font-weight: 800; color: white;">T</div>
+              <div>
+                <div style="font-weight: 700; color: var(--ink);">ToxikGaming</div>
+                <div style="font-size: 0.8rem; color: var(--muted);">Moderator, Hub</div>
+              </div>
+            </div>
+            <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">"We use Amplify's leveling and rank cards. The members love competing on the leaderboard, and the economy system keeps them highly active."</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="panel-card panel-card-wide" style="margin-top: 60px; text-align: center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.05)); border: 1px solid rgba(99, 102, 241, 0.25); padding: 60px 40px;">
+        <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; color: var(--ink); margin: 0 0 16px;">Ready to upgrade your Discord server?</h2>
+        <p style="color: var(--muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto 36px; line-height: 1.6;">Join thousands of server owners who use Amplify to create highly engaging, secure, and active Discord communities.</p>
+        <div class="cta-row" style="justify-content: center;">
+          <a class="primary-button" href="/auth/login" style="padding: 16px 36px; font-size: 1.05rem;">Invite Amplify Bot</a>
+          <a class="ghost-button" href="https://discord.gg/your-support-server" style="padding: 16px 36px; font-size: 1.05rem;">Join Support Server</a>
+        </div>
+      </section>
+
+      <!-- Footer Section -->
+      <footer style="margin-top: 80px; padding: 40px 0 20px; border-top: 1px solid var(--line); display: grid; gap: 32px;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
+          <div>
+            <a class="brand" href="/" style="margin-bottom: 16px; display: inline-flex;">
+              <span class="brand-mark">A</span>
+              <span class="brand-copy">
+                <strong>Amplify Bot</strong>
+                <small>Discord Operations</small>
+              </span>
+            </a>
+            <p style="color: var(--muted); max-width: 280px; font-size: 0.9rem; line-height: 1.5;">The ultimate all-in-one Discord bot featuring moderation, automated leveling, YouTube notifications, and more.</p>
+          </div>
+          
+          <div style="display: flex; gap: 60px; flex-wrap: wrap;">
+            <div>
+              <h4 style="color: var(--ink); font-family: 'Space Grotesk', sans-serif; margin: 0 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Product</h4>
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--muted);">
+                <a href="/plugins" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Plugins</a>
+                <a href="/status" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Status</a>
+                <a href="/dashboard" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Dashboard</a>
+              </div>
+            </div>
+            <div>
+              <h4 style="color: var(--ink); font-family: 'Space Grotesk', sans-serif; margin: 0 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Company</h4>
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--muted);">
+                <a href="/about" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">About Us</a>
+                <a href="/contact" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Contact Support</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; border-top: 1px solid var(--line); padding-top: 20px; font-size: 0.85rem; color: var(--muted);">
+          <div>&copy; <%= currentYear %> Amplify Bot. All rights reserved. Not affiliated with Discord Inc.</div>
+          <div style="display: flex; gap: 20px;">
+            <a href="https://discord.com" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Discord.com</a>
+            <a href="https://github.com/manavtiwari1" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">GitHub</a>
+          </div>
+        </div>
+      </footer>
     </main>
+
+    <!-- Animated counters logic -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const animateCount = (id, target, suffix = "") => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          let count = 0;
+          const val = parseFloat(target.replace(/[^0-9.]/g, ''));
+          const isFloat = target.includes(".");
+          const isInt = !isFloat;
+          const speed = val / 40;
+          const timer = setInterval(() => {
+            count += speed;
+            if (count >= val) {
+              clearInterval(timer);
+              el.innerText = target + suffix;
+            } else {
+              el.innerText = (isInt ? Math.round(count) : count.toFixed(1)) + suffix;
+            }
+          }, 30);
+        };
+      });
+    </script>
   </body>
 </html>

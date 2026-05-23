@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/assets/dashboard.css" />
+  </head>
+  <body class="dashboard-shell">
+    <div class="page-glow page-glow-left"></div>
+    <div class="page-glow page-glow-right"></div>
+    
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">A</span>
+        <span class="brand-copy">
+          <strong>Amplify Bot</strong>
+          <small>Discord Operations</small>
+        </span>
+      </a>
+      <nav class="topbar-actions" style="margin-left: auto; display: flex; gap: 24px; font-weight: 600;">
+        <a href="/" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Home</a>
+        <a href="/about" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">About</a>
+        <a href="/plugins" style="color: var(--ink);">Plugins</a>
+        <a href="/status" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Status</a>
+        <a href="/contact" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Contact</a>
+      </nav>
+      <nav class="topbar-actions">
+        <% if (currentUser) { %>
+          <a class="ghost-button" href="/dashboard">Dashboard</a>
+          <a class="ghost-button" href="/logout">Log Out</a>
+        <% } else { %>
+          <% if (oauthReady) { %>
+            <a class="primary-button" href="/auth/login">Add to Discord</a>
+          <% } else { %>
+            <span class="status-pill status-pill-warn">Auth Offline</span>
+          <% } %>
+        <% } %>
+      </nav>
+    </header>
+
+    <main class="landing">
+      <% if (flash) { %>
+        <div class="flash flash-<%= flash.type %>"><%= flash.text %></div>
+      <% } %>
+
+      <!-- Section Title -->
+      <section style="text-align: center; margin-bottom: 40px;">
+        <span class="eyebrow">Modules</span>
+        <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.8rem; margin: 0 0 10px;">Explore Bot Plugins</h1>
+        <p style="color: var(--muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6;">
+          Configure and toggle modules instantly to adapt Amplify to your community's needs. From admin moderation to server games, we've got you covered.
+        </p>
+      </section>
+
+      <!-- Filter / Search System -->
+      <section class="filter-bar">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="plugin-search" class="text-input" placeholder="Search plugins..." style="width: 100%;" />
+        </div>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">All Modules</button>
+          <button class="filter-btn" data-filter="admin">Admin & Safety</button>
+          <button class="filter-btn" data-filter="fun">Fun & Games</button>
+          <button class="filter-btn" data-filter="utilities">Utilities</button>
+        </div>
+      </section>
+
+      <!-- Plugins Grid -->
+      <section class="feature-grid" id="plugins-grid">
+        <!-- 1. Moderation -->
+        <article class="feature-card" data-category="admin" data-title="Moderation" data-desc="Keep your server secure with automatic invite filtering, caps limiters, message sweeps, spam blocks, and customizable bad words list. Configure instant warnings, mutes, kicks, or bans." data-features="Invite filtering & spam blocker,Banned keyword blacklists,Warn/Kick/Ban log tracing,Automatic slow mode scheduler">
+          <div class="plugin-icon-box">🛡️</div>
+          <span class="feature-kicker">Admin & Safety</span>
+          <h2>Moderation</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Keep your server clean with automatic invite filtering, caps limits, spam control, and word block lists.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+        
+        <!-- 2. Music -->
+        <article class="feature-card" data-category="fun" data-title="Music Engine" data-desc="Stream high-definition voice audio with full queue control, search triggers, volume levels, and audio filtering. Supports saved playlists and continuous DJ play options." data-features="Lossless 320kbps HD audio streaming,Smart queue management & shuffle,YouTube & Spotify playlist import,Interactive DJ playback dashboard">
+          <div class="plugin-icon-box plugin-icon-cyan">🎵</div>
+          <span class="feature-kicker">Fun & Games</span>
+          <h2>Music</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Stream high-definition voice audio with full queue control, search triggers, and volume levels.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 3. AI Chat -->
+        <article class="feature-card" data-category="utilities" data-title="AI Chat" data-desc="Engage members in automated discussions using state-of-the-art conversational AI models. Train it on custom knowledge base documentation to act as your community support agent." data-features="Smart conversational responses,Custom server context training,Moderation auto-safety filters,Configurable temperature & personalities">
+          <div class="plugin-icon-box plugin-icon-gold">🧠</div>
+          <span class="feature-kicker">Utilities</span>
+          <h2>AI Chat</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Engage members in automated discussions using state-of-the-art conversational AI models.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 4. Tickets -->
+        <article class="feature-card" data-category="utilities" data-title="Ticket System" data-desc="Resolve user requests inside private threads with full logging transcripts and panel actions. Set up custom ticket categories, claims mechanisms, and automatic closures." data-features="Interactive request panel embeds,Multi-category routing structures,Automatic HTML transcript logs,Claim and re-assign operations">
+          <div class="plugin-icon-box plugin-icon-red">🎟️</div>
+          <span class="feature-kicker">Utilities</span>
+          <h2>Tickets</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Resolve user requests inside private threads with full logging transcripts and panel actions.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 5. Logging -->
+        <article class="feature-card" data-category="admin" data-title="Logging System" data-desc="Record member joins, message updates, profile changes, and admin moderations instantly. Route logs to different private channels based on event categories." data-features="Detailed audit log entries,Message edit & deletion tracking,Role updates and nickname modifications,Voice connection join/leave logging">
+          <div class="plugin-icon-box plugin-icon-green">📝</div>
+          <span class="feature-kicker">Admin & Safety</span>
+          <h2>Logging</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Record member joins, message updates, profile changes, and admin moderations instantly.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 6. Auto Roles -->
+        <article class="feature-card" data-category="admin" data-title="Auto Roles" data-desc="Assign customizable welcome roles to your community members automatically upon arrival. Supports delayed roles, toggleable reaction roles, and level milestone rewards." data-features="Instant join role assignment,Support for multiple entry roles,Join-delay triggers (verification),Admin override settings dashboard">
+          <div class="plugin-icon-box">🏷️</div>
+          <span class="feature-kicker">Admin & Safety</span>
+          <h2>Auto Roles</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Assign customizable welcome roles to your community members automatically upon arrival.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 7. Welcome Messages -->
+        <article class="feature-card" data-category="utilities" data-title="Welcome Cards" data-desc="Send beautiful cards or customized greetings to introduce new arrivals to channels. Add automatic server rules reminders and direct link buttons." data-features="Custom canvas welcome banners,Embed cards with image fields,Direct greeting messages (DMs),Rules buttons & guides setup">
+          <div class="plugin-icon-box plugin-icon-cyan">👋</div>
+          <span class="feature-kicker">Utilities</span>
+          <h2>Welcome Messages</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Send beautiful cards or customized greetings to introduce new arrivals to channels.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 8. Economy -->
+        <article class="feature-card" data-category="fun" data-title="Server Economy" data-desc="Give chatters custom currencies to buy shop items, unlock custom roles, or trade items. Engage members with daily rewards, balances, coinflips, and minigames." data-features="Configurable shop inventories,Daily/Weekly currency claims,Global server balances display,Coinflip/Slots/Roulette mini-games">
+          <div class="plugin-icon-box plugin-icon-gold">🪙</div>
+          <span class="feature-kicker">Fun & Games</span>
+          <h2>Economy</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Give chatters custom currencies to buy shop items, unlock custom roles, or trade items.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 9. Leveling -->
+        <article class="feature-card" data-category="fun" data-title="Leveling System" data-desc="Reward active chatters with leveling XP milestones, customizable ranking cards, and scoreboards. Set up role multipliers and XP blacklisted channels." data-features="Custom rank-card generator,Scoreboard leaderboard pages,Milestone role-unlock rewards,XP channel filter controls">
+          <div class="plugin-icon-box plugin-icon-red">📈</div>
+          <span class="feature-kicker">Fun & Games</span>
+          <h2>Leveling</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Reward active chatters with leveling XP milestones, customizable ranking cards, and scoreboards.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 10. Giveaways -->
+        <article class="feature-card" data-category="fun" data-title="Giveaways" data-desc="Host giveaway raffles with role requirements, level thresholds, and automatic draw selectors. Schedule multiple items, customize reactions, and reroll winners." data-features="Level or role eligibility checks,Scheduled countdown timers,Automatic winner drawing backend,Instant giveaway reroll option">
+          <div class="plugin-icon-box plugin-icon-green">🎁</div>
+          <span class="feature-kicker">Fun & Games</span>
+          <h2>Giveaways</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Host giveaway raffles with role requirements, level thresholds, and automatic draw selectors.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 11. Anti-Raid Shield -->
+        <article class="feature-card" data-category="admin" data-title="Anti-Raid Shield" data-desc="Block bot accounts, automatically throttle rapid join intervals, and block spam campaigns. Secure your server from malicious raids and token attacks." data-features="Rapid join pattern triggers,Automatic new-account bans,CAPTCHA verification settings,Verification channel lock-downs">
+          <div class="plugin-icon-box">🛡️</div>
+          <span class="feature-kicker">Admin & Safety</span>
+          <h2>Anti-Raid Shield</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Block bot accounts, automatically throttle rapid join intervals, and block spam campaigns.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+
+        <!-- 12. Fun Commands -->
+        <article class="feature-card" data-category="fun" data-title="Fun Commands" data-desc="Play trivia, trigger custom emojis, display search gifs, and prompt memes on-demand. Give your community interactive and humorous command options." data-features="Dynamic multiplayer trivia cards,Custom meme generator prompts,Giphy and Tenor query filters,Interactive polls and random dice">
+          <div class="plugin-icon-box plugin-icon-cyan">🎮</div>
+          <span class="feature-kicker">Fun & Games</span>
+          <h2>Fun Commands</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px; line-height: 1.5;">Play trivia, trigger custom emojis, display search gifs, and prompt memes on-demand.</p>
+          <button class="ghost-button learn-more-btn" style="margin-top: auto; align-self: start; width: 100%; text-align: center;">Learn More</button>
+        </article>
+      </section>
+
+      <!-- Details Modal Overlay -->
+      <div class="modal-overlay" id="details-modal">
+        <div class="modal-card">
+          <button class="modal-close" id="modal-close-btn">&times;</button>
+          <div class="modal-body">
+            <h2 id="modal-title">Plugin Name</h2>
+            <p id="modal-description">Detailed description goes here...</p>
+            
+            <h4 style="color: var(--ink); margin-top: 24px; margin-bottom: 12px; font-family: 'Space Grotesk', sans-serif;">Key Features Included</h4>
+            <div class="modal-features-list" id="modal-features">
+              <!-- Dynamically populated -->
+            </div>
+            
+            <div style="margin-top: 36px; display: flex; gap: 12px;">
+              <a href="/auth/login" class="primary-button" style="flex: 1; text-align: center;">Enable Plugin</a>
+              <button class="ghost-button" id="modal-back-btn" style="flex: 1;">Close Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Section -->
+      <footer style="margin-top: 100px; padding: 40px 0 20px; border-top: 1px solid var(--line); display: grid; gap: 32px;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
+          <div>
+            <a class="brand" href="/" style="margin-bottom: 16px; display: inline-flex;">
+              <span class="brand-mark">A</span>
+              <span class="brand-copy">
+                <strong>Amplify Bot</strong>
+                <small>Discord Operations</small>
+              </span>
+            </a>
+            <p style="color: var(--muted); max-width: 280px; font-size: 0.9rem; line-height: 1.5;">The ultimate all-in-one Discord bot featuring moderation, automated leveling, YouTube notifications, and more.</p>
+          </div>
+          
+          <div style="display: flex; gap: 60px; flex-wrap: wrap;">
+            <div>
+              <h4 style="color: var(--ink); font-family: 'Space Grotesk', sans-serif; margin: 0 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Product</h4>
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--muted);">
+                <a href="/plugins" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Plugins</a>
+                <a href="/status" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Status</a>
+                <a href="/dashboard" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Dashboard</a>
+              </div>
+            </div>
+            <div>
+              <h4 style="color: var(--ink); font-family: 'Space Grotesk', sans-serif; margin: 0 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Company</h4>
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--muted);">
+                <a href="/about" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">About Us</a>
+                <a href="/contact" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Contact Support</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; border-top: 1px solid var(--line); padding-top: 20px; font-size: 0.85rem; color: var(--muted);">
+          <div>&copy; <%= currentYear %> Amplify Bot. All rights reserved. Not affiliated with Discord Inc.</div>
+          <div style="display: flex; gap: 20px;">
+            <a href="https://discord.com" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Discord.com</a>
+            <a href="https://github.com/manavtiwari1" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">GitHub</a>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Search, Filter & Modal Client Logic -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Elements
+        const searchInput = document.getElementById("plugin-search");
+        const filterBtns = document.querySelectorAll(".filter-btn");
+        const cards = document.querySelectorAll("#plugins-grid .feature-card");
+        
+        const modal = document.getElementById("details-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalDesc = document.getElementById("modal-description");
+        const modalFeatures = document.getElementById("modal-features");
+        const modalCloseBtn = document.getElementById("modal-close-btn");
+        const modalBackBtn = document.getElementById("modal-back-btn");
+
+        // Filter Logic
+        let activeFilter = "all";
+        let searchQuery = "";
+
+        const filterPlugins = () => {
+          cards.forEach(card => {
+            const matchesCategory = activeFilter === "all" || card.getAttribute("data-category") === activeFilter;
+            const cardTitle = card.getAttribute("data-title").toLowerCase();
+            const cardDesc = card.getAttribute("data-desc").toLowerCase();
+            const matchesSearch = cardTitle.includes(searchQuery) || cardDesc.includes(searchQuery);
+            
+            if (matchesCategory && matchesSearch) {
+              card.style.display = "flex";
+            } else {
+              card.style.display = "none";
+            }
+          });
+        };
+
+        // Search Input Event
+        searchInput.addEventListener("input", (e) => {
+          searchQuery = e.target.value.toLowerCase().trim();
+          filterPlugins();
+        });
+
+        // Filter Button Events
+        filterBtns.forEach(btn => {
+          btn.addEventListener("click", () => {
+            filterBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            activeFilter = btn.getAttribute("data-filter");
+            filterPlugins();
+          });
+        });
+
+        // Modal Open Logic
+        cards.forEach(card => {
+          const btn = card.querySelector(".learn-more-btn");
+          if (!btn) return;
+          btn.addEventListener("click", () => {
+            const title = card.getAttribute("data-title");
+            const desc = card.getAttribute("data-desc");
+            const featuresStr = card.getAttribute("data-features");
+            const features = featuresStr ? featuresStr.split(",") : [];
+
+            modalTitle.innerText = title;
+            modalDesc.innerText = desc;
+            modalFeatures.innerHTML = "";
+
+            features.forEach(feat => {
+              const item = document.createElement("div");
+              item.className = "modal-feature-item";
+              item.innerHTML = `
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" style="color: var(--green);">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>${feat.trim()}</span>
+              `;
+              modalFeatures.appendChild(item);
+            });
+
+            modal.classList.add("open");
+          });
+        });
+
+        // Modal Close Logic
+        const closeModal = () => {
+          modal.classList.remove("open");
+        };
+
+        modalCloseBtn.addEventListener("click", closeModal);
+        modalBackBtn.addEventListener("click", closeModal);
+        
+        // Close modal on background click
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            closeModal();
+          }
+        });
+
+        // ESC key close
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            closeModal();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

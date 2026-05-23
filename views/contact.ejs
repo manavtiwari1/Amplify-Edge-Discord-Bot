@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/assets/dashboard.css" />
+  </head>
+  <body class="dashboard-shell">
+    <div class="page-glow page-glow-left"></div>
+    <div class="page-glow page-glow-right"></div>
+    
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">A</span>
+        <span class="brand-copy">
+          <strong>Amplify Bot</strong>
+          <small>Discord Operations</small>
+        </span>
+      </a>
+      <nav class="topbar-actions" style="margin-left: auto; display: flex; gap: 24px; font-weight: 600;">
+        <a href="/" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Home</a>
+        <a href="/about" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">About</a>
+        <a href="/plugins" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Plugins</a>
+        <a href="/status" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Status</a>
+        <a href="/contact" style="color: var(--ink);">Contact</a>
+      </nav>
+      <nav class="topbar-actions">
+        <% if (currentUser) { %>
+          <a class="ghost-button" href="/dashboard">Dashboard</a>
+          <a class="ghost-button" href="/logout">Log Out</a>
+        <% } else { %>
+          <% if (oauthReady) { %>
+            <a class="primary-button" href="/auth/login">Add to Discord</a>
+          <% } else { %>
+            <span class="status-pill status-pill-warn">Auth Offline</span>
+          <% } %>
+        <% } %>
+      </nav>
+    </header>
+
+    <main class="landing">
+      <% if (flash) { %>
+        <div class="flash flash-<%= flash.type %>"><%= flash.text %></div>
+      <% } %>
+
+      <!-- Section Title -->
+      <section style="text-align: center; margin-bottom: 50px;">
+        <span class="eyebrow">Get in Touch</span>
+        <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.8rem; margin: 0 0 10px;">Contact Support & Devs</h1>
+        <p style="color: var(--muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6;">
+          Have questions, custom feature requests, or need technical assistance? Fill out the contact form below or connect with us on Discord.
+        </p>
+      </section>
+
+      <!-- Main Contact Section -->
+      <section class="contact-hero-grid">
+        <!-- Contact Form Card -->
+        <article class="panel-card" style="padding: 40px; position: relative; overflow: hidden;" id="contact-form-container">
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 24px;">Send us a Message</h2>
+          
+          <form id="contact-form" novalidate>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
+              <div>
+                <label for="contact-name" style="font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Your Name</label>
+                <input type="text" id="contact-name" class="text-input" placeholder="e.g. John Doe" required style="width: 100%;" />
+                <span class="error-msg" id="err-name" style="color: var(--red); font-size: 0.8rem; margin-top: 4px; display: none;">Please enter your name</span>
+              </div>
+              <div>
+                <label for="contact-email" style="font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Email Address</label>
+                <input type="email" id="contact-email" class="text-input" placeholder="e.g. john@example.com" required style="width: 100%;" />
+                <span class="error-msg" id="err-email" style="color: var(--red); font-size: 0.8rem; margin-top: 4px; display: none;">Please enter a valid email address</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <label for="contact-discord" style="font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Discord Username <span style="font-weight: normal; text-transform: none; color: var(--muted-soft);">(Optional)</span></label>
+              <input type="text" id="contact-discord" class="text-input" placeholder="e.g. johndoe_discord" style="width: 100%;" />
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <label for="contact-message" style="font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Message details</label>
+              <textarea id="contact-message" class="text-input" placeholder="Write your question or request here..." required style="width: 100%; min-height: 120px; resize: vertical; line-height: 1.5; font-family: inherit;"></textarea>
+              <span class="error-msg" id="err-message" style="color: var(--red); font-size: 0.8rem; margin-top: 4px; display: none;">Please enter your message</span>
+            </div>
+
+            <button type="submit" class="primary-button" id="contact-submit-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; padding: 14px 28px;">
+              <span id="btn-text">Send Message</span>
+              <div class="btn-loader" id="btn-spinner" style="display: none;"></div>
+            </button>
+          </form>
+
+          <!-- Success State Display (Hidden by default) -->
+          <div id="contact-success-state" style="display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--panel-strong); flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; z-index: 10;">
+            <div style="width: 70px; height: 70px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 2px solid var(--green); display: grid; place-items: center; margin-bottom: 24px;">
+              <svg width="32" height="32" viewBox="0 0 20 20" fill="currentColor" style="color: var(--green);">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; color: var(--ink); margin: 0 0 10px;">Message Sent Successfully!</h3>
+            <p style="color: var(--muted); max-width: 320px; font-size: 0.95rem; line-height: 1.6; margin-bottom: 30px;">
+              Thank you for contacting us. Our support crew will review your ticket and reach out to you via email shortly.
+            </p>
+            <button class="ghost-button" id="success-back-btn" style="padding: 10px 24px;">Send Another Message</button>
+          </div>
+        </article>
+
+        <!-- Support Info & Links -->
+        <article style="display: flex; flex-direction: column; gap: 24px;">
+          <!-- Discord Support Card -->
+          <div class="panel-card" style="padding: 32px; border: 1px solid rgba(88, 101, 242, 0.25); background: linear-gradient(135deg, rgba(88, 101, 242, 0.08), rgba(5, 7, 12, 0.4));">
+            <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(88, 101, 242, 0.15); display: grid; place-items: center; color: #5865f2; font-size: 1.6rem; margin-bottom: 20px;">💬</div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; color: var(--ink); margin: 0 0 8px;">Discord Support Server</h3>
+            <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px;">
+              For immediate assistance, join our active Discord support community. Chat directly with moderators and developers.
+            </p>
+            <a href="https://discord.gg/your-support-server" class="primary-button" style="background: #5865f2; border-color: #5865f2; display: inline-flex; align-items: center; gap: 8px;">
+              <span>Join Support Community</span>
+            </a>
+          </div>
+
+          <!-- Developer Center Card -->
+          <div class="panel-card" style="padding: 32px;">
+            <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); display: grid; place-items: center; color: var(--ink); font-size: 1.6rem; margin-bottom: 20px;">🛠️</div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; color: var(--ink); margin: 0 0 8px;">Report Bug & GitHub</h3>
+            <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px;">
+              Found a bug or have a core feature design draft? Open a pull request or file a ticket directly on our GitHub tracker.
+            </p>
+            <a href="https://github.com/manavtiwari1" class="ghost-button" style="display: inline-flex; align-items: center; gap: 8px;">
+              <span>File GitHub Issue</span>
+            </a>
+          </div>
+        </article>
+      </section>
+
+      <!-- FAQ Section -->
+      <section style="margin-top: 80px; max-width: 800px; margin-left: auto; margin-right: auto;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <span class="eyebrow">FAQ</span>
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: var(--ink); margin: 0 0 8px;">Frequently Asked Questions</h2>
+          <p style="color: var(--muted); font-size: 1.05rem;">Quick answers to common questions about Amplify Bot</p>
+        </div>
+
+        <div class="accordion">
+          <!-- FAQ 1 -->
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>How do I add Amplify Bot to my Discord server?</span>
+              <div class="accordion-icon">+</div>
+            </div>
+            <div class="accordion-content">
+              Adding Amplify Bot is simple! Click the <strong>“Add to Discord”</strong> button in the top right corner of the website. Log in with your Discord account, select the server you want to authorize, grant the requested permissions, and hit Authorize. The bot will join your server immediately.
+            </div>
+          </div>
+          
+          <!-- FAQ 2 -->
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>Is Amplify Bot really 100% free?</span>
+              <div class="accordion-icon">+</div>
+            </div>
+            <div class="accordion-content">
+              Yes, Amplify is completely free to use. All core modules—including advanced moderation, ticket dashboards, HD music, custom welcome messages, and leveling metrics—are unlocked for all servers without any subscription fees.
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>Can I customize the welcome banner and level cards?</span>
+              <div class="accordion-icon">+</div>
+            </div>
+            <div class="accordion-content">
+              Absolutely! Amplify features a detailed customizations panel in your server dashboard. You can select custom background images, update greeting texts, modify level XP bars, adjust color themes, and configure automatic role milestones.
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>Where can I report a bug or request a feature?</span>
+              <div class="accordion-icon">+</div>
+            </div>
+            <div class="accordion-content">
+              We welcome your feedback! You can submit bug reports or feature suggestions using the contact form on this page, or by joining our Discord support community where our developers monitor tickets around the clock. If you are a developer, feel free to file issues directly in our GitHub tracker.
+            </div>
+          </div>
+
+          <!-- FAQ 5 -->
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>How does the AI Chat module work?</span>
+              <div class="accordion-icon">+</div>
+            </div>
+            <div class="accordion-content">
+              The AI Chat module connects your channels to state-of-the-art LLMs. You can toggle this plugin, assign a custom personality or prompt instruction to the bot, and select which channels it responds in. It will automatically engage with users, answer questions, and moderate discussions contextually.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer Section -->
+      <footer style="margin-top: 100px; padding: 40px 0 20px; border-top: 1px solid var(--line); display: grid; gap: 32px;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
+          <div>
+            <a class="brand" href="/" style="margin-bottom: 16px; display: inline-flex;">
+              <span class="brand-mark">A</span>
+              <span class="brand-copy">
+                <strong>Amplify Bot</strong>
+                <small>Discord Operations</small>
+              </span>
+            </a>
+            <p style="color: var(--muted); max-width: 280px; font-size: 0.9rem; line-height: 1.5;">The ultimate all-in-one Discord bot featuring moderation, automated leveling, YouTube notifications, and more.</p>
+          </div>
+          
+          <div style="display: flex; gap: 60px; flex-wrap: wrap;">
+            <div>
+              <h4 style="color: var(--ink); font-family: 'Space Grotesk', sans-serif; margin: 0 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Product</h4>
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--muted);">
+                <a href="/plugins" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Plugins</a>
+                <a href="/status" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Status</a>
+                <a href="/dashboard" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Dashboard</a>
+              </div>
+            </div>
+            <div>
+              <h4 style="color: var(--ink); font-family: 'Space Grotesk', sans-serif; margin: 0 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Company</h4>
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--muted);">
+                <a href="/about" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">About Us</a>
+                <a href="/contact" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Contact Support</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; border-top: 1px solid var(--line); padding-top: 20px; font-size: 0.85rem; color: var(--muted);">
+          <div>&copy; <%= currentYear %> Amplify Bot. All rights reserved. Not affiliated with Discord Inc.</div>
+          <div style="display: flex; gap: 20px;">
+            <a href="https://discord.com" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Discord.com</a>
+            <a href="https://github.com/manavtiwari1" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">GitHub</a>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <!-- FAQ Accordion & Contact validation client logic -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // FAQ Accordion Logic
+        const accordionItems = document.querySelectorAll(".accordion-item");
+        
+        accordionItems.forEach(item => {
+          const header = item.querySelector(".accordion-header");
+          header.addEventListener("click", () => {
+            const isActive = item.classList.contains("active");
+            
+            // Close all items
+            accordionItems.forEach(acc => acc.classList.remove("active"));
+            
+            // If it wasn't active, open it
+            if (!isActive) {
+              item.classList.add("active");
+            }
+          });
+        });
+
+        // Contact Form Interactive validation / mock submission logic
+        const form = document.getElementById("contact-form");
+        const submitBtn = document.getElementById("contact-submit-btn");
+        const btnText = document.getElementById("btn-text");
+        const btnSpinner = document.getElementById("btn-spinner");
+        const successState = document.getElementById("contact-success-state");
+        const successBackBtn = document.getElementById("success-back-btn");
+
+        const nameInput = document.getElementById("contact-name");
+        const emailInput = document.getElementById("contact-email");
+        const messageInput = document.getElementById("contact-message");
+
+        const errName = document.getElementById("err-name");
+        const errEmail = document.getElementById("err-email");
+        const errMessage = document.getElementById("err-message");
+
+        // Helper to validate email format
+        const validateEmail = (email) => {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        };
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          
+          let isValid = true;
+
+          // Reset errors
+          errName.style.display = "none";
+          errEmail.style.display = "none";
+          errMessage.style.display = "none";
+
+          // Validate Name
+          if (!nameInput.value.trim()) {
+            errName.style.display = "block";
+            isValid = false;
+          }
+
+          // Validate Email
+          if (!emailInput.value.trim() || !validateEmail(emailInput.value.trim())) {
+            errEmail.style.display = "block";
+            isValid = false;
+          }
+
+          // Validate Message
+          if (!messageInput.value.trim()) {
+            errMessage.style.display = "block";
+            isValid = false;
+          }
+
+          if (!isValid) return;
+
+          // Trigger loading state
+          submitBtn.disabled = true;
+          btnText.innerText = "Submitting...";
+          btnSpinner.style.display = "inline-block";
+
+          // Mock Ajax delay of 1.5s
+          setTimeout(() => {
+            // Show Success Overlay
+            successState.style.display = "flex";
+            
+            // Reset form fields
+            form.reset();
+            
+            // Restore button state
+            submitBtn.disabled = false;
+            btnText.innerText = "Send Message";
+            btnSpinner.style.display = "none";
+          }, 1500);
+        });
+
+        // Success back button trigger
+        successBackBtn.addEventListener("click", () => {
+          successState.style.display = "none";
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/assets/dashboard.css" />
+  </head>
+  <body class="dashboard-shell">
+    <div class="page-glow page-glow-left"></div>
+    <div class="page-glow page-glow-right"></div>
+    
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">A</span>
+        <span class="brand-copy">
+          <strong>Amplify Bot</strong>
+          <small>Discord Operations</small>
+        </span>
+      </a>
+      <nav class="topbar-actions" style="margin-left: auto; display: flex; gap: 24px; font-weight: 600;">
+        <a href="/" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Home</a>
+        <a href="/about" style="color: var(--ink);">About</a>
+        <a href="/plugins" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Plugins</a>
+        <a href="/status" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Status</a>
+        <a href="/contact" style="color: var(--muted); transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Contact</a>
+      </nav>
+      <nav class="topbar-actions">
+        <% if (currentUser) { %>
+          <a class="ghost-button" href="/dashboard">Dashboard</a>
+          <a class="ghost-button" href="/logout">Log Out</a>
+        <% } else { %>
+          <% if (oauthReady) { %>
+            <a class="primary-button" href="/auth/login">Add to Discord</a>
+          <% } else { %>
+            <span class="status-pill status-pill-warn">Auth Offline</span>
+          <% } %>
+        <% } %>
+      </nav>
+    </header>
+
+    <main class="landing">
+      <% if (flash) { %>
+        <div class="flash flash-<%= flash.type %>"><%= flash.text %></div>
+      <% } %>
+
+      <!-- Hero / Mission Section -->
+      <section class="hero-card" style="min-height: auto; padding: 60px 40px; margin-bottom: 40px; text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto;">
+          <span class="eyebrow">Our Mission</span>
+          <h1 style="font-size: 2.8rem; margin-bottom: 20px;">Redefining Discord Communities</h1>
+          <p style="color: var(--muted); font-size: 1.15rem; line-height: 1.7; margin-bottom: 0;">
+            Amplify Bot was born out of a simple idea: server management shouldn't require installing a dozen different bots. We build the most powerful, highly scalable, and developer-friendly Discord bot on the planet, allowing you to moderate, entertain, and grow your server from a single unified hub.
+          </p>
+        </div>
+      </section>
+
+      <!-- Core Differentiators -->
+      <section style="margin-top: 60px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <span class="eyebrow">Why Amplify</span>
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: var(--ink); margin: 0;">Built for Scale, Speed, and Security</h2>
+        </div>
+        <div class="field-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="panel-card" style="padding: 32px;">
+            <div style="display: flex; gap: 20px; align-items: start;">
+              <div class="plugin-icon-box" style="margin-bottom: 0;">⚡</div>
+              <div>
+                <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; color: var(--ink); margin: 0 0 10px;">Blazing Fast Performance</h3>
+                <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">Amplify is optimized for near-zero latency. Using advanced memory caching and clustered execution, our bot processes commands and moderation sweeps in milliseconds.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="panel-card" style="padding: 32px;">
+            <div style="display: flex; gap: 20px; align-items: start;">
+              <div class="plugin-icon-box plugin-icon-cyan" style="margin-bottom: 0;">🛡️</div>
+              <div>
+                <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; color: var(--ink); margin: 0 0 10px;">Military-Grade Security</h3>
+                <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">Your guild data and member lists are protected. We implement strict anti-raid triggers, secure OAuth2 connections, and comprehensive access control policies.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card" style="padding: 32px;">
+            <div style="display: flex; gap: 20px; align-items: start;">
+              <div class="plugin-icon-box plugin-icon-gold" style="margin-bottom: 0;">🧠</div>
+              <div>
+                <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; color: var(--ink); margin: 0 0 10px;">State-of-the-Art AI</h3>
+                <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">We leverage cutting-edge conversational models to provide contextual automated replies, smart tickets, and sentiment tracking in channels.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card" style="padding: 32px;">
+            <div style="display: flex; gap: 20px; align-items: start;">
+              <div class="plugin-icon-box plugin-icon-green" style="margin-bottom: 0;">⚙️</div>
+              <div>
+                <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; color: var(--ink); margin: 0 0 10px;">Intuitive Dashboard</h3>
+                <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">Configure everything in real-time. No complicated prefix commands needed; toggle components, customize leveling layouts, and moderate easily via the web interface.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- vertical timeline of bot development milestones -->
+      <section style="margin-top: 80px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <span class="eyebrow">History</span>
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: var(--ink); margin: 0;">Development Timeline</h2>
+          <p style="color: var(--muted); max-width: 600px; margin: 10px auto 0; font-size: 1.05rem;">From initial code sketch to thousands of active server clusters.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item timeline-left">
+            <div class="timeline-content">
+              <span>Q1 2025</span>
+              <h3>Project Genesis</h3>
+              <p>Amplify Bot started as a private custom moderator script for gaming servers. The core focus was handling roles and custom commands.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item timeline-right">
+            <div class="timeline-content">
+              <span>Q3 2025</span>
+              <h3>V1.0 Public Release</h3>
+              <p>Amplify launched to the public with fully integrated moderation, custom greetings, and high-fidelity music streaming features.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-content">
+              <span>Q1 2026</span>
+              <h3>Dashboard & AI Chat</h3>
+              <p>Introduced our premium web-based dashboard and automated AI response engines, eliminating the need for command line configurations.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-content">
+              <span>Q2 2026</span>
+              <h3>Scale and Beyond</h3>
+              <p>Hitting 10,000+ communities. We are continuously improving dashboard widgets, adding advanced database redundancy, and leveling systems.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Developer Showcase -->
+      <section style="margin-top: 80px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <span class="eyebrow">Our Creators</span>
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: var(--ink); margin: 0;">Meet the Team</h2>
+          <p style="color: var(--muted); max-width: 600px; margin: 10px auto 0; font-size: 1.05rem;">The engineers and designers dedicated to building the future of community control.</p>
+        </div>
+
+        <div class="developer-grid">
+          <div class="panel-card" style="padding: 32px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(168, 85, 247, 0.25);">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--cyan)); display: grid; place-items: center; font-size: 2rem; font-weight: 800; color: white; margin-bottom: 20px; box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);">MT</div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; color: var(--ink); margin: 0 0 6px;">Manav Tiwari</h3>
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 16px;">Lead Developer & Founder</span>
+            <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0; max-width: 260px;">Core architect of Amplify. Specializes in Node.js backend systems, database cluster management, and Discord API integrations.</p>
+          </div>
+
+          <div class="panel-card" style="padding: 32px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(6, 182, 212, 0.25);">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--green)); display: grid; place-items: center; font-size: 2rem; font-weight: 800; color: white; margin-bottom: 20px; box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);">DE</div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; color: var(--ink); margin: 0 0 6px;">DeepMind Partner</h3>
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 16px;">AI System Engineer</span>
+            <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0; max-width: 260px;">Leading implementation of LLM bots and context managers, building the brain of our automated support chat tools.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tech Stack -->
+      <section style="margin-top: 80px; text-align: center;">
+        <div style="margin-bottom: 30px;">
+          <span class="eyebrow">Technology</span>
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: var(--ink); margin: 0;">Our Technology Stack</h2>
+          <p style="color: var(--muted); max-width: 600px; margin: 10px auto 0; font-size: 1.05rem;">We use modern, fast, and proven tools to build a highly reliable service.</p>
+        </div>
+        <div class="tech-stack-container">
+          <span class="tech-badge">Node.js</span>
+          <span class="tech-badge">Discord.js</span>
+          <span class="tech-badge">Express</span>
+          <span class="tech-badge">EJS Templates</span>
+          <span class="tech-badge">SQLite3</span>
+          <span class="tech-badge">Vercel Edge</span>
+          <span class="tech-badge">CSS Grid & Flexbox</span>
+          <span class="tech-badge">WebSockets</span>
+        </div>
+      </section>
+
+      <!-- Footer Section -->
+      <footer style="margin-top: 100px; padding: 40px 0 20px; border-top: 1px solid var(--line); display: grid; gap: 32px;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
+          <div>
+            <a class="brand" href="/" style="margin-bottom: 16px; display: inline-flex;">
+              <span class="brand-mark">A</span>
+              <span class="brand-copy">
+                <strong>Amplify Bot</strong>
+                <small>Discord Operations</small>
+              </span>
+            </a>
+            <p style="color: var(--muted); max-width: 280px; font-size: 0.9rem; line-height: 1.5;">The ultimate all-in-one Discord bot featuring moderation, automated leveling, YouTube notifications, and more.</p>
+          </div>
+          
+          <div style="display: flex; gap: 60px; flex-wrap: wrap;">
+            <div>
+              <h4 style="color: var(--ink); font-family: 'Space Grotesk', sans-serif; margin: 0 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Product</h4>
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--muted);">
+                <a href="/plugins" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Plugins</a>
+                <a href="/status" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Status</a>
+                <a href="/dashboard" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Dashboard</a>
+              </div>
+            </div>
+            <div>
+              <h4 style="color: var(--ink); font-family: 'Space Grotesk', sans-serif; margin: 0 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Company</h4>
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--muted);">
+                <a href="/about" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">About Us</a>
+                <a href="/contact" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Contact Support</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; border-top: 1px solid var(--line); padding-top: 20px; font-size: 0.85rem; color: var(--muted);">
+          <div>&copy; <%= currentYear %> Amplify Bot. All rights reserved. Not affiliated with Discord Inc.</div>
+          <div style="display: flex; gap: 20px;">
+            <a href="https://discord.com" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">Discord.com</a>
+            <a href="https://github.com/manavtiwari1" style="transition: color 0.2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">GitHub</a>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>
